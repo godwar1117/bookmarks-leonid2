@@ -1,5 +1,8 @@
 package com.bookmarks.config;
 
+import com.alibaba.fastjson.JSON;
+import com.bookmarks.entity.City;
+import com.bookmarks.repository.CityRepository;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -50,11 +53,18 @@ public class KafkaConfig {
 //    }
 
     @Bean
-    public KStream<Integer, String> mykStream(StreamsBuilder kStreamBuilder) {
+    @Autowired
+    public KStream<Integer, String> mykStream(StreamsBuilder kStreamBuilder, CityRepository cityRepository) {
         KStream<Integer, String> stream = kStreamBuilder.stream("leonid2");
         // Fluent KStream API
         stream
-                .mapValues(String::toUpperCase)
+                .mapValues((e) -> {
+                    City city = new City();
+                    city.setName(e);
+                    city.setState("Q");
+                    city = cityRepository.save(city);
+                    return JSON.toJSONString(city);
+                })
                 .to("leonid3");
         System.out.println("进入leonid2");
         stream.print();

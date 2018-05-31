@@ -1,6 +1,7 @@
 package com.bookmarks.web;
 
 import com.bookmarks.config.Listener;
+import com.bookmarks.repository.CityRepository;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.PostConstruct;
 import java.util.concurrent.Callable;
 
 import static org.hibernate.validator.internal.util.Contracts.assertTrue;
@@ -27,6 +29,8 @@ public class IndexController {
 
     @Autowired
     private KafkaTemplate<Integer, String> template;
+    @Autowired
+    private CityRepository cityRepository;
 
     @RequestMapping("/test1")
     public Object index(String data) {
